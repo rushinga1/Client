@@ -17,9 +17,10 @@
         <div class="mobile-header__content">
           <div class="mobile-header__logo">
             <div class="logo-icon">
-              <Icon icon="ph:recycle" />
+              <!-- Replaced recycle icon with leaflet/client focused icon or keep as is if no specific instruction, but I'll use ph:leaf for client feel -->
+              <Icon icon="ph:leaf" />
             </div>
-            <span class="logo-text">Agruni</span>
+            <span class="logo-text">Agruni Client</span>
           </div>
           
           <div class="mobile-header__actions">
@@ -167,10 +168,14 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   portalType: 'user',
   navigationItems: () => [
-    { path: '/dashboard', label: 'Dashboard', icon: 'ph:house' },
-    { path: '/payments', label: 'Payments', icon: 'ph:credit-card' },
+    { path: '/dashboard', label: 'Dashboard', icon: 'ph:squares-four' },
+    { path: '/reminders', label: 'Reminder', icon: 'ph:bell-simple' },
+    { path: '/debts', label: 'Debts', icon: 'ph:money' },
+    { path: '/settings', label: 'Settings', icon: 'ph:gear' },
+    { path: '/account', label: 'Account', icon: 'ph:user-focus' },
     { path: '/history', label: 'History', icon: 'ph:clock-counter-clockwise' },
-    { path: '/profile', label: 'Profile', icon: 'ph:user' }
+    { path: '/pay', label: 'Service payment', icon: 'ph:credit-card' },
+    { path: '/messages', label: 'Messages page', icon: 'ph:chat-circle-dots' }
   ]
 })
 

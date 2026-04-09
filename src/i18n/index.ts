@@ -33,7 +33,7 @@ function getBrowserLocale(): string {
   return localeMap[browserLang] || 'en'
 }
 
-// Get stored locale or fallback to browser locale
+// Get stored locale or fallback to English
 function getStoredLocale(): string {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('agruni_locale')
@@ -41,7 +41,7 @@ function getStoredLocale(): string {
       return stored
     }
   }
-  return getBrowserLocale()
+  return 'en' // Default is always English
 }
 
 // Create i18n instance
@@ -50,16 +50,15 @@ const i18n = createI18n({
   locale: getStoredLocale(),
   fallbackLocale: 'en',
   messages,
-  globalInjection: true, // Allow global access to $t()
-  silentTranslationWarn: false, // Show missing translation warnings in development
-  silentFallbackWarn: false,
+  globalInjection: true,
+  silentTranslationWarn: true,
+  silentFallbackWarn: true,
   warnHtmlMessage: false,
   missing: (locale, key) => {
-    // Log missing translations in development
     if (import.meta.env.DEV) {
       console.warn(`Missing translation for key "${key}" in locale "${locale}"`)
     }
-    return key // Return the key as fallback
+    return key
   }
 })
 

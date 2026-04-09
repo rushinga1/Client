@@ -22,37 +22,59 @@ export default {
     error: 'Erreur',
     success: 'Succès',
     warning: 'Avertissement',
-    info: 'Information'
+    info: 'Information',
+    download: 'Télécharger',
+    upload: 'Téléverser',
+    update: 'Mettre à jour',
+    goBack: 'Retour',
+    goToAccount: 'Aller au Compte',
   },
 
   // Navigation
   nav: {
     dashboard: 'Tableau de bord',
-    payments: 'Paiements',
+    payments: 'Paiement de Service',
     history: 'Historique',
-    profile: 'Profil',
+    reminders: 'Rappels',
+    debts: 'Dettes',
+    messages: 'Messages',
+    account: 'Compte',
     settings: 'Paramètres',
+    help: 'Centre d\'aide',
     logout: 'Déconnexion',
     login: 'Connexion',
-    register: "S'inscrire"
+    register: 'S\'inscrire',
+    online: 'En ligne',
+    clientOfAgruni: 'Client d\'Agruni',
+    customerOfAgruni: 'Abonné d\'Agruni',
   },
 
   // Dashboard
   dashboard: {
     title: 'Tableau de bord',
     welcome: 'Bon retour',
+    welcomeGreeting: 'Bonjour, {name}',
+    overviewToday: 'Voici votre aperçu pour aujourd\'hui — {date}',
     quickPaymentHub: 'Centre de Paiement Rapide',
     serviceStatus: 'Statut du Service',
     paymentSummary: 'Résumé des Paiements',
     recentTransactions: 'Transactions Récentes',
+    recentPayments: 'Paiements Récents',
     quickActions: 'Actions Rapides',
     trackCollection: 'Suivre la Collecte',
-    viewAll: 'Voir Tout'
+    viewAll: 'Voir Tout',
+    paid: 'Payé',
+    unpaid: 'Non payé',
+    thisWeek: 'Cette Semaine',
+    thisMonth: 'Ce Mois',
+    syncedJustNow: 'Synchronisé à l\'instant',
+    syncing: 'Synchronisation...',
   },
 
   // Payment
   payment: {
-    selectWeeks: 'Sélectionner les Semaines à Payer',
+    title: 'Paiement de Service',
+    selectWeeks: 'Sélectionner les semaines à payer',
     selectedWeeks: '{count} semaine(s) sélectionnée(s)',
     totalAmount: 'Montant Total',
     weeksSelected: 'Semaines Sélectionnées',
@@ -64,25 +86,132 @@ export default {
     confirmPay: 'Confirmer & Payer',
     payNow: 'Payer Maintenant',
     viewReceipt: 'Voir le Reçu',
-    dueOn: 'Due le {date}',
+    dueOn: 'Dû le {date}',
     overdue: 'En retard',
     status: {
       paid: 'Payé',
       pending: 'En attente',
       overdue: 'En retard',
-      upcoming: 'À venir'
-    }
+      upcoming: 'À venir',
+    },
   },
 
-  // Debt
+  // Debts
   debt: {
-    title: {
-      default: 'Rappel de Paiement',
-      warning: 'Paiement en Retard',
-      danger: 'Avertissement de Suspension de Service'
-    },
+    title: 'Mes Dettes',
+    description: 'Examinez et réglez vos paiements de collecte en cours.',
+    totalDebt: 'Total Impayé',
+    unpaidMonths: 'Mois impayés — réglez pour éviter la suspension du service.',
+    noDebts: 'Aucune dette en cours.',
+    payNow: 'Payer Maintenant',
+    month: 'Mois',
+    amount: 'Montant',
+    status: 'Statut',
+    action: 'Action',
     owedFor: 'dû pour {count} semaine(s)',
-    serviceBanWarning: 'Le service sera suspendu si le paiement n\'est pas effectué dans 7 jours'
+    serviceBanWarning: 'Le service sera suspendu si le paiement n\'est pas effectué dans 7 jours',
+  },
+
+  // Account
+  account: {
+    title: 'Mon Compte',
+    description: 'Gérez vos informations personnelles, votre localisation et vos préférences de service.',
+    downloadPdf: 'Télécharger le Profil PDF',
+    personalInfo: 'Informations Personnelles',
+    myLocation: 'Ma Localisation',
+    serviceUsage: 'Utilisation du Service',
+    fullName: 'Nom Complet',
+    accountId: 'ID du Compte',
+    phone: 'Téléphone',
+    email: 'Adresse Email',
+    joined: 'Inscrit le',
+    status: 'Statut',
+    district: 'District',
+    sector: 'Secteur',
+    houseNumber: 'Numéro de Maison',
+    cell: 'Cellule',
+    paymentRate: 'Taux de Paiement',
+    totalPaid: 'Total Payé',
+    currentPlan: 'Plan Actuel',
+    rating: 'Note',
+    editPersonalInfo: 'Modifier les Informations Personnelles',
+    editLocation: 'Modifier la Localisation',
+    editMetrics: 'Modifier les Métriques de Service',
+    active: 'Actif',
+    appUser: 'Utilisateur de l\'application',
+  },
+
+  // Settings
+  settings: {
+    title: 'Paramètres et Préférences',
+    description: 'Configurez la sécurité de votre compte, les notifications et vos préférences de service.',
+    personalInfo: 'Informations Personnelles',
+    personalInfoHint: 'Pour mettre à jour votre nom, téléphone ou localisation, veuillez visiter votre page de compte.',
+    security: 'Sécurité',
+    currentPassword: 'Mot de passe actuel',
+    newPassword: 'Nouveau mot de passe',
+    showPasswords: 'Afficher les mots de passe',
+    updatePassword: 'Mettre à jour le mot de passe',
+    strength: {
+      weak: 'Force du mot de passe : Faible',
+      medium: 'Force du mot de passe : Moyen',
+      strong: 'Force du mot de passe : Fort',
+    },
+    notifications: 'Notifications',
+    smsNotifications: 'Notifications SMS',
+    smsNotificationsHint: 'Recevez des alertes de collecte sur votre téléphone.',
+    emailReceipts: 'Reçus par Email',
+    emailReceiptsHint: 'Recevez les confirmations de paiement par email.',
+    pushNotifications: 'Notifications Push',
+    pushNotificationsHint: 'Alertes dans l\'application pour les changements de planning.',
+    servicePreferences: 'Préférences de Service',
+    language: 'Langue Préférée de la Plateforme',
+    collectionTiming: 'Préférence d\'Horaire de Collecte',
+    morning: 'Matin (6h - 11h)',
+    afternoon: 'Après-midi (13h - 17h)',
+    anytime: 'N\'importe quand',
+    savePreferences: 'Enregistrer les Préférences',
+  },
+
+  // Help Center
+  help: {
+    title: 'Centre d\'aide',
+    description: 'Trouvez tout ce que vous devez savoir sur Agruni et comment gérer votre service via ce portail.',
+    searchPlaceholder: 'Rechercher des guides, informations de facturation ou FAQ...',
+    aboutAgruni: 'À propos d\'Agruni',
+    aboutText: 'Agruni est le principal fournisseur de services de gestion des déchets et d\'assainissement au Rwanda. Notre mission est de transformer la vie urbaine en créant un environnement propre, vert et durable pour tous les citoyens.',
+    benefit1: 'Collecte et recyclage intégrés des déchets',
+    benefit2: 'Systèmes d\'élimination respectueux de l\'environnement',
+    benefit3: 'Transformation numérique des services municipaux',
+    howItWorks: 'Comment fonctionne le Portail',
+    howItWorksIntro: 'Le Portail Client Agruni est un pont numérique entre les citoyens et notre équipe de gestion des déchets. Utilisez-le pour :',
+    step1Title: 'Surveiller le tableau de bord :',
+    step1Text: 'Obtenez des mises à jour immédiates sur l\'état de votre collecte et les soldes impayés.',
+    step2Title: 'Paiements numériques :',
+    step2Text: 'Payez vos services de collecte de déchets instantanément via Mobile Money (MoMo) ou cartes bancaires.',
+    step3Title: 'Communication directe :',
+    step3Text: 'Discutez directement avec votre agent assigné ou le centre de support concernant les problèmes de service.',
+    faq: 'Foire Aux Questions',
+    faq1Q: 'Comment puis-je payer ma collecte mensuelle ?',
+    faq1A: 'Accédez à l\'onglet Paiement de Service dans la barre latérale. Vous pouvez sélectionner vos mois impayés et effectuer la transaction via MTN MoMo ou votre carte bancaire.',
+    faq2Q: 'Que faire si le camion a manqué mon ramassage ?',
+    faq2A: 'Accédez à la section Messages et envoyez un message rapide à votre agent assigné. Il peut fournir des mises à jour en temps réel sur sa localisation.',
+    faq3Q: 'Puis-je changer ma fréquence de collecte ?',
+    faq3A: 'Actuellement, les fréquences de collecte sont standardisées par zone. Pour des besoins spéciaux, veuillez contacter le support via le Centre d\'aide.',
+    needMoreHelp: 'Besoin d\'aide supplémentaire ?',
+    supportAvailability: 'Notre équipe de support est disponible du lundi au vendredi, de 8h à 17h.',
+    contactSupport: 'Contacter le Support',
+  },
+
+  // Messages
+  messages: {
+    title: 'Messages',
+    description: 'Communiquez directement avec vos agents de service Agruni.',
+    typeMessage: 'Tapez un message...',
+    send: 'Envoyer',
+    you: 'Vous',
+    online: 'En ligne',
+    supportAgent: 'Agent de Support',
   },
 
   // User
@@ -94,14 +223,14 @@ export default {
     role: 'Rôle',
     language: 'Langue',
     lastLogin: 'Dernière Connexion',
-    memberSince: 'Membre Depuis'
+    memberSince: 'Membre Depuis',
   },
 
   // Roles
   roles: {
     user: 'Utilisateur',
     admin: 'Administrateur',
-    worker: 'Agent de Collecte'
+    worker: 'Agent de Collecte',
   },
 
   // Service
@@ -111,29 +240,28 @@ export default {
     distance: '{distance} km de distance',
     estimatedTime: 'Est. {time}',
     collectionStatus: 'Statut de Collecte',
-    nextCollection: 'Prochaine Collecte'
+    nextCollection: 'Prochaine Collecte',
   },
 
   // Errors
   errors: {
     networkError: 'Erreur réseau. Vérifiez votre connexion.',
     serverError: 'Erreur serveur. Réessayez plus tard.',
-    invalidCredentials: 'Email ou mot de passe invalide.',
     paymentFailed: 'Paiement échoué. Réessayez.',
     insufficientFunds: 'Fonds insuffisants.',
     invalidPin: 'PIN invalide. Réessayez.',
     sessionExpired: 'Session expirée. Reconnectez-vous.',
     notFound: 'Page non trouvée.',
-    accessDenied: 'Accès refusé.'
+    accessDenied: 'Accès refusé.',
   },
 
   // Success messages
   success: {
-    paymentProcessed: 'Paiement traité avec succès!',
-    profileUpdated: 'Profil mis à jour avec succès!',
-    passwordChanged: 'Mot de passe changé avec succès!',
-    settingsSaved: 'Paramètres enregistrés avec succès!',
-    logout: 'Déconnecté avec succès.'
+    paymentProcessed: 'Paiement traité avec succès !',
+    profileUpdated: 'Profil mis à jour avec succès !',
+    passwordChanged: 'Mot de passe changé avec succès !',
+    settingsSaved: 'Paramètres enregistrés avec succès !',
+    logout: 'Déconnecté avec succès.',
   },
 
   // Form validation
@@ -145,7 +273,7 @@ export default {
     maxLength: 'Ne doit pas dépasser {max} caractères',
     passwordMatch: 'Les mots de passe doivent correspondre',
     numeric: 'Veuillez entrer un nombre valide',
-    positive: 'Veuillez entrer un nombre positif'
+    positive: 'Veuillez entrer un nombre positif',
   },
 
   // Date and time
@@ -161,11 +289,11 @@ export default {
     lastYear: 'L\'Année Dernière',
     ago: 'il y a {time}',
     in: 'dans {time}',
-    minutes: '{count} minute',
-    hours: '{count} heure',
-    days: '{count} jour',
-    weeks: '{count} semaine',
+    minutes: '{count} minute(s)',
+    hours: '{count} heure(s)',
+    days: '{count} jour(s)',
+    weeks: '{count} semaine(s)',
     months: '{count} mois',
-    years: '{count} an'
-  }
+    years: '{count} an(s)',
+  },
 }

@@ -37,15 +37,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { Icon } from '@iconify/vue'
-
-interface Locale {
-  code: string
-  name: string
-  native: string
-  flag: string
-}
+import { locale as activeLocale, setLocale, availableLocales } from '../../i18n'
 
 interface Props {
   compact?: boolean
@@ -55,21 +48,12 @@ const props = withDefaults(defineProps<Props>(), {
   compact: false
 })
 
-const { locale, setLocale } = useI18n()
-
 const isOpen = ref(false)
 
-const availableLocales: Locale[] = [
-  { code: 'en', name: 'English', native: 'English', flag: '🇬🇧' },
-  { code: 'rw', name: 'Kinyarwanda', native: 'Ikinyarwanda', flag: '🇷🇼' },
-  { code: 'fr', name: 'French', native: 'Français', flag: '🇫🇷' },
-  { code: 'sw', name: 'Swahili', native: 'Kiswahili', flag: '🇰🇪' }
-]
-
-const currentLocale = computed(() => locale.value)
+const currentLocale = computed(() => activeLocale.value)
 
 const currentLanguageLabel = computed(() => {
-  const current = availableLocales.find(l => l.code === currentLocale.value)
+  const current = (availableLocales as readonly any[]).find(l => l.code === currentLocale.value)
   return current?.native || current?.name || 'Language'
 })
 
@@ -77,7 +61,7 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
 
-const selectLanguage = (code: string) => {
+const selectLanguage = (code: any) => {
   setLocale(code)
   isOpen.value = false
 }

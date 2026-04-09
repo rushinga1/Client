@@ -3,21 +3,9 @@
     <div class="header-container">
       <!-- Left Section -->
       <div class="header-left">
-        <button class="mobile-menu-toggle" @click="toggleMobileMenu">
-          <Icon icon="ph:list" />
-        </button>
-        
-        <div class="header-search">
-          <div class="search-container">
-            <Icon icon="ph:magnifying-glass" class="search-icon" />
-            <input 
-              type="text" 
-              placeholder="Search by name, village, or house ID..." 
-              class="search-input"
-              v-model="searchQuery"
-              aria-label="Search households"
-            />
-          </div>
+        <div class="catchphrase">
+          <div class="agruni-lettermark">A</div>
+          <span><strong>Agruni</strong> — Keeping Rwanda Clean and Green</span>
         </div>
       </div>
 
@@ -39,22 +27,17 @@
           </button>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="header-item">
-          <button class="icon-button" @click="showQuickActions">
-            <Icon icon="ph:plus" />
-          </button>
-        </div>
 
         <!-- User Menu -->
         <div class="header-item user-menu">
           <button class="user-button" @click="toggleUserMenu">
             <div class="user-avatar">
-              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face" alt="User" />
+              <img v-if="authStore.user?.avatar" :src="authStore.user.avatar" alt="User" />
+              <div v-else class="avatar-fallback">{{ userInitials }}</div>
             </div>
             <div class="user-info">
-              <div class="user-name">Agent Marie</div>
-              <div class="user-status">Online</div>
+              <div class="user-name">{{ authStore.user?.name || $t('nav.account') }}</div>
+              <div class="user-status">{{ $t('nav.online') }}</div>
             </div>
             <Icon icon="ph:caret-down" class="dropdown-icon" />
           </button>
@@ -110,31 +93,32 @@
     <div v-if="showUserMenu" class="dropdown user-dropdown">
       <div class="user-dropdown-header">
         <div class="user-avatar-large">
-          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=48&h=48&fit=crop&crop=face" alt="User" />
+          <img v-if="authStore.user?.avatar" :src="authStore.user.avatar" alt="User" />
+          <div v-else class="avatar-fallback-large">{{ userInitials }}</div>
         </div>
         <div class="user-details">
-          <div class="user-name">Agent Marie</div>
-          <div class="user-email">marie@agruni.rw</div>
-          <div class="user-role">Field Worker • Kigali</div>
+          <div class="user-name">{{ authStore.user?.name }}</div>
+          <div class="user-email">{{ authStore.user?.email }}</div>
+          <div class="user-role">{{ $t('nav.clientOfAgruni') }}</div>
         </div>
       </div>
       <div class="dropdown-menu">
-        <router-link to="/profile" class="dropdown-item">
-          <Icon icon="ph:user" />
-          <span>Profile</span>
+        <router-link to="/account" class="dropdown-item">
+          <Icon icon="ph:user-focus" />
+          <span>{{ $t('nav.account') }}</span>
         </router-link>
         <router-link to="/settings" class="dropdown-item">
           <Icon icon="ph:gear" />
-          <span>Settings</span>
+          <span>{{ $t('nav.settings') }}</span>
         </router-link>
         <router-link to="/help" class="dropdown-item">
           <Icon icon="ph:question" />
-          <span>Help Center</span>
+          <span>{{ $t('nav.help') }}</span>
         </router-link>
         <div class="dropdown-divider"></div>
         <button class="dropdown-item logout" @click="handleLogout">
           <Icon icon="ph:sign-out" />
-          <span>Logout</span>
+          <span>{{ $t('nav.logout') }}</span>
         </button>
       </div>
     </div>
@@ -157,48 +141,60 @@ const showMessages = ref(false)
 const showUserMenu = ref(false)
 
 // Mock data
-const notificationCount = ref(5)
-const messageCount = ref(3)
+const notificationCount = ref(4)
+const messageCount = ref(2)
+
+const userInitials = computed(() => {
+  const name = authStore.user?.name || ''
+  return name.split(' ').map(n => n[0]).join('').toUpperCase()
+})
 
 const notifications = ref([
   {
     id: 1,
-    type: 'success',
-    title: 'Route Completed',
-    message: 'Kiyovu Sector route has been successfully completed',
-    time: '2 min ago'
+    type: 'info',
+    title: 'Collection Schedule Update',
+    message: 'Tomorrow’s waste collection is rescheduled to 8 AM.',
+    time: '2 hours ago'
   },
   {
     id: 2,
-    type: 'warning',
-    title: 'Weather Alert',
-    message: 'Heavy rain expected in Nyarugenge area',
-    time: '15 min ago'
+    type: 'success',
+    title: 'Payment Received',
+    message: 'We have successfully received your MoMo payment.',
+    time: '1 day ago'
   },
   {
     id: 3,
+    type: 'warning',
+    title: 'Waste Sorting Reminder',
+    message: 'Please remember to separate organic waste from plastics.',
+    time: '2 days ago'
+  },
+  {
+    id: 4,
     type: 'info',
-    title: 'New Assignment',
-    message: 'You have been assigned to Gasabo Sector tomorrow',
-    time: '1 hour ago'
+    title: 'Holiday Notice',
+    message: 'No collections will be made on Friday due to Umuganda.',
+    time: '3 days ago'
   }
 ])
 
 const messages = ref([
   {
     id: 1,
-    sender: 'John Doe',
+    sender: 'Agent Jean-Paul N.',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face',
-    text: 'Can you confirm the collection time for household #1234?',
+    text: 'I will be arriving at your location in 10 minutes for the collection.',
     time: '5 min ago',
     unread: true
   },
   {
     id: 2,
-    sender: 'Support Team',
+    sender: 'Agent Jean-Paul N.',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face',
-    text: 'Your weekly report has been approved',
-    time: '1 hour ago',
+    text: 'Please make sure the waste bags are tied securely. Thank you!',
+    time: '3 hours ago',
     unread: true
   }
 ])
@@ -226,9 +222,6 @@ const toggleUserMenu = () => {
   showMessages.value = false
 }
 
-const showQuickActions = () => {
-  // Show quick actions modal
-}
 
 const markAllRead = () => {
   notificationCount.value = 0
@@ -255,8 +248,9 @@ const handleLogout = async () => {
 }
 
 // Close dropdowns when clicking outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.header-item')) {
+document.addEventListener('click', (e: MouseEvent) => {
+  const target = e.target as HTMLElement | null
+  if (target && !target.closest('.header-item')) {
     showNotifications.value = false
     showMessages.value = false
     showUserMenu.value = false
@@ -295,71 +289,34 @@ document.addEventListener('click', (e) => {
   flex: 1;
 }
 
-.mobile-menu-toggle {
+.catchphrase {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  color: #2563eb;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.catchphrase strong {
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.agruni-lettermark {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  color: #6b7280;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.mobile-menu-toggle:hover {
-  background: #f3f4f6;
-  color: #374151;
-}
-
-.mobile-menu-toggle svg {
-  width: 20px;
-  height: 20px;
-}
-
-.header-search {
-  flex: 1;
-  max-width: 480px;
-}
-
-.search-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.search-icon {
-  position: absolute;
-  left: 16px;
-  color: #9ca3af;
-  width: 18px;
-  height: 18px;
-  pointer-events: none;
-}
-
-.search-input {
-  width: 100%;
-  height: 40px;
-  padding: 0 16px 0 44px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  background: #f9fafb;
-  font-size: 14px;
-  color: #374151;
-  transition: all 0.2s ease;
-}
-
-.search-input::placeholder {
-  color: #9ca3af;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  width: 28px;
+  height: 28px;
+  background: #2563eb;
+  color: white;
+  border-radius: 6px;
+  font-family: system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 1;
 }
 
 /* Right Section */
@@ -450,6 +407,22 @@ document.addEventListener('click', (e) => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.avatar-fallback, .avatar-fallback-large {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-600, #2563eb);
+  color: white;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.avatar-fallback-large {
+  font-size: 18px;
 }
 
 .user-info {
@@ -783,8 +756,8 @@ document.addEventListener('click', (e) => {
     padding: 0 16px;
   }
   
-  .header-search {
-    display: none;
+  .catchphrase {
+    font-size: 14px;
   }
   
   .user-info {

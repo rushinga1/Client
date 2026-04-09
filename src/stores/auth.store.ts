@@ -10,11 +10,27 @@ interface User {
   avatar?: string
   memberSince: string
   lastLogin?: string
+  // Extended fields for local persistence in this demo
+  joinedDate?: string
+  status?: string
+  plan?: string
+  area?: {
+    district: string
+    sector: string
+    cell: string
+    houseNum: string
+  }
+  metrics?: {
+    paymentRate: number
+    totalPaid: number
+    rating: number
+  }
 }
 
 export const useAuthStore = defineStore('auth', () => {
   // State
   const user = ref<User | null>(null)
+  const isLoggedIn = ref(false)
   const isLoading = ref(false)
   const error = ref('')
 
@@ -37,12 +53,26 @@ export const useAuthStore = defineStore('auth', () => {
       memberSince: '2023-06-01'
     },
     worker: {
-      id: '3',
-      name: 'Agent Marie',
-      email: 'marie@agruni.rw',
-      phone: '+250 788 555 333',
-      role: 'worker',
-      memberSince: '2023-03-20'
+      id: 'AGR-C-8821',
+      name: 'Marie Claire',
+      email: 'marie.claire@gmail.com',
+      phone: '+250 782 445 991',
+      role: 'user',
+      memberSince: '2025-02-10',
+      joinedDate: 'February 10, 2025',
+      status: 'Active',
+      plan: 'Standard Plan',
+      area: {
+        district: 'Kigali',
+        sector: 'Kicukiro',
+        cell: 'Niboye',
+        houseNum: 'NB-202-A'
+      },
+      metrics: {
+        paymentRate: 100,
+        totalPaid: 45000,
+        rating: 5.0
+      }
     }
   }
 
@@ -84,11 +114,12 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true
 
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500))
 
       user.value = null
+      isLoggedIn.value = false
       localStorage.removeItem('agruni_user')
+      localStorage.removeItem('agruni_loggedin')
 
       return true
     } catch (err) {
@@ -98,6 +129,14 @@ export const useAuthStore = defineStore('auth', () => {
     } finally {
       isLoading.value = false
     }
+  }
+
+  const loginWithPhone = (phone: string) => {
+    // Merge phone with mock worker profile for the client portal
+    user.value = { ...mockUsers.worker, phone }
+    isLoggedIn.value = true
+    localStorage.setItem('agruni_user', JSON.stringify(user.value))
+    localStorage.setItem('agruni_loggedin', 'true')
   }
 
   const updateProfile = async (updates: Partial<User>) => {
@@ -158,17 +197,28 @@ export const useAuthStore = defineStore('auth', () => {
   // Initialize
   const init = () => {
     checkAuth()
+    // Check if the user was previously signed in
+    const loggedIn = localStorage.getItem('agruni_loggedin') === 'true'
+    if (loggedIn && user.value) {
+      isLoggedIn.value = true
+    } else if (!loggedIn || !user.value?.area) {
+      // Not logged in, clear user state so route guard redirects to login
+      user.value = null
+      isLoggedIn.value = false
+    }
   }
 
   return {
     // State
     user,
+    isLoggedIn,
     isLoading,
     error,
     
     // Actions
     login,
     logout,
+    loginWithPhone,
     updateProfile,
     checkAuth,
     init,

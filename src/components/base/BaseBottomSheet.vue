@@ -53,8 +53,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
+import { ref, computed, nextTick, onMounted, onUnmounted, useSlots } from 'vue'
 import { Icon } from '@iconify/vue'
+
+const slots = useSlots()
 
 interface SnapPoint {
   label: string
@@ -65,7 +67,7 @@ interface SnapPoint {
 interface Props {
   modelValue: boolean
   title?: string
-  size?: 'sm' | 'md' | 'lg' | 'full'
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
   snapPoints?: SnapPoint[]
   showClose?: boolean
   closeOnOverlay?: boolean
@@ -111,8 +113,8 @@ const panelClasses = computed(() => [
 ])
 
 const contentClasses = computed(() => ({
-  'bottom-sheet__content--no-header': !props.title && !props.$slots?.header,
-  'bottom-sheet__content--no-footer': !props.$slots?.footer
+  'bottom-sheet__content--no-header': !props.title && !slots.header,
+  'bottom-sheet__content--no-footer': !slots.footer
 }))
 
 const currentSnapPoint = computed(() => props.snapPoints[currentSnapIndex.value])

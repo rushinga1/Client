@@ -1,11 +1,21 @@
 <template>
-  <AppLayout>
-    <router-view />
-  </AppLayout>
+  <div class="app-root">
+    <template v-if="isPublicRoute">
+      <!-- Public pages (Login) — no sidebar/header -->
+      <router-view />
+    </template>
+    <template v-else>
+      <!-- Authenticated app layout -->
+      <AppLayout>
+        <router-view />
+      </AppLayout>
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from './stores/auth.store'
 import { useUIStore } from './stores/ui.store'
 import AppLayout from './components/layout/AppLayout.vue'
@@ -13,6 +23,9 @@ import AppLayout from './components/layout/AppLayout.vue'
 // Stores
 const authStore = useAuthStore()
 const uiStore = useUIStore()
+const route = useRoute()
+
+const isPublicRoute = computed(() => route.meta?.isPublic === true)
 
 // Initialize app
 onMounted(() => {
@@ -115,16 +128,18 @@ h6 {
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  color-scheme: dark;
-  
+  html {
+    color-scheme: dark;
+  }
+
   ::-webkit-scrollbar-track {
     background: var(--color-neutral-800);
   }
-  
+
   ::-webkit-scrollbar-thumb {
     background: var(--color-neutral-600);
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     background: var(--color-neutral-500);
   }
@@ -220,17 +235,6 @@ h6 {
 }
 
 /* App state styles */
-.app--mobile {
-  /* Mobile-specific styles */
-}
-
-.app--desktop {
-  /* Desktop-specific styles */
-}
-
-.app--sidebar-collapsed {
-  /* Collapsed sidebar styles */
-}
 
 .app--dark {
   /* Dark mode styles */

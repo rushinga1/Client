@@ -1,274 +1,131 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-export interface Week {
-  id: number
-  label: string
-  amount: number
-  status: 'paid' | 'pending' | 'overdue' | 'upcoming'
-  dueDate?: string
-  paidDate?: string
-  transactionId?: string
-}
-
-export interface Transaction {
+export interface PaymentRecord {
   id: string
-  weekIds: number[]
+  date: string
   amount: number
-  currency: string
-  status: 'pending' | 'completed' | 'failed'
-  createdAt: string
-  completedAt?: string
-  method: 'mobile_money' | 'bank' | 'cash'
-  reference?: string
+  service: string
+  method: 'MTN MoMo' | 'Airtel Money' | 'Visa' | 'Mastercard'
+  status: 'completed' | 'pending' | 'failed'
+  transactionId: string
 }
 
 export const usePaymentStore = defineStore('payment', () => {
-  // State
-  const weeks = ref<Week[]>([])
-  const transactions = ref<Transaction[]>([])
-  const isLoading = ref(false)
-  const error = ref<string>('')
-
-  // Mock data generation
-  const generateMockWeeks = (): Week[] => {
-    const currentWeek = new Date()
-    const weeks: Week[] = []
-    
-    // Generate 52 weeks (1 year)
-    for (let i = 0; i < 52; i++) {
-      const weekDate = new Date(currentWeek)
-      weekDate.setDate(weekDate.getDate() + (i * 7))
-      
-      const weekNumber = Math.floor(i / 4) + 1
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      const label = `Week ${i + 1}, ${monthNames[weekDate.getMonth()]} ${weekDate.getFullYear()}`
-      
-      let status: Week['status'] = 'upcoming'
-      let dueDate: string | undefined
-      let paidDate: string | undefined
-      let transactionId: string | undefined
-      
-      // Set some weeks as paid (first 20 weeks)
-      if (i < 20) {
-        status = 'paid'
-        paidDate = new Date(weekDate.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
-        transactionId = `TXN${1000 + i}`
-      } 
-      // Set some weeks as pending (weeks 20-25)
-      else if (i < 26) {
-        status = 'pending'
-        dueDate = weekDate.toISOString()
-      }
-      // Set some weeks as overdue (weeks 26-30)
-      else if (i < 31) {
-        status = 'overdue'
-        dueDate = new Date(weekDate.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString()
-      }
-      // Rest are upcoming
-      else {
-        status = 'upcoming'
-        dueDate = weekDate.toISOString()
-      }
-      
-      weeks.push({
-        id: i + 1,
-        label,
-        amount: 2500, // RWF 2,500 per week
-        status,
-        dueDate,
-        paidDate,
-        transactionId
-      })
-    }
-    
-    return weeks
-  }
-
-  const generateMockTransactions = (): Transaction[] => {
-    const transactions: Transaction[] = []
-    
-    // Generate transactions for paid weeks
-    for (let i = 0; i < 20; i++) {
-      const weekIds = [i + 1]
-      const createdAt = new Date(Date.now() - (i * 7 * 24 * 60 * 60 * 1000)).toISOString()
-      
-      transactions.push({
-        id: `TXN${1000 + i}`,
-        weekIds,
-        amount: 2500,
-        currency: 'RWF',
-        status: 'completed',
-        createdAt,
-        completedAt: createdAt,
-        method: i % 2 === 0 ? 'mobile_money' : 'bank',
-        reference: `REF${1000 + i}`
-      })
-    }
-    
-    // Add a recent failed transaction
-    transactions.push({
-      id: 'TXN2001',
-      weekIds: [26, 27],
+  // Mock Payment History
+  const history = ref<PaymentRecord[]>([
+    {
+      id: 'PAY-2026-001',
+      date: '2026-04-05',
       amount: 5000,
-      currency: 'RWF',
-      status: 'failed',
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      method: 'mobile_money'
-    })
-    
-    return transactions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-  }
+      service: 'Base Waste Collection',
+      method: 'MTN MoMo',
+      status: 'completed',
+      transactionId: 'TXN88229103'
+    },
+    {
+      id: 'PAY-2026-002',
+      date: '2026-03-28',
+      amount: 5000,
+      service: 'Base Waste Collection',
+      method: 'MTN MoMo',
+      status: 'completed',
+      transactionId: 'TXN88229104'
+    },
+    {
+      id: 'PAY-2026-003',
+      date: '2026-03-15',
+      amount: 12000,
+      service: 'Special Waste Removal',
+      method: 'Visa',
+      status: 'completed',
+      transactionId: 'TXN88229105'
+    },
+    {
+      id: 'PAY-2026-004',
+      date: '2026-02-25',
+      amount: 5000,
+      service: 'Base Waste Collection',
+      method: 'Airtel Money',
+      status: 'completed',
+      transactionId: 'TXN88229106'
+    },
+    {
+      id: 'PAY-2026-005',
+      date: '2026-02-10',
+      amount: 1500,
+      service: 'Late Fee Payment',
+      method: 'MTN MoMo',
+      status: 'completed',
+      transactionId: 'TXN88229107'
+    },
+    {
+      id: 'PAY-2026-006',
+      date: '2026-01-20',
+      amount: 5000,
+      service: 'Base Waste Collection',
+      method: 'MTN MoMo',
+      status: 'completed',
+      transactionId: 'TXN88229108'
+    }
+  ])
 
-  // Computed
-  const unpaidWeeks = computed(() => {
-    return weeks.value.filter((week: any) => week.status === 'pending' || week.status === 'overdue')
-  })
-
-  const overdueWeeks = computed(() => {
-    return weeks.value.filter((week: any) => week.status === 'overdue')
-  })
-
-  const paidWeeks = computed(() => {
-    return weeks.value.filter((week: any) => week.status === 'paid')
-  })
-
-  const upcomingWeeks = computed(() => {
-    return weeks.value.filter((week: any) => week.status === 'upcoming')
-  })
-
-  const totalDebt = computed(() => {
-    return unpaidWeeks.value.reduce((sum: number, week: any) => sum + week.amount, 0)
-  })
-
-  const recentTransactions = computed(() => {
-    return transactions.value.slice(0, 10)
-  })
-
-  const successfulTransactions = computed(() => {
-    return transactions.value.filter((t: any) => t.status === 'completed')
-  })
-
-  const failedTransactions = computed(() => {
-    return transactions.value.filter((t: any) => t.status === 'failed')
-  })
+  // Mock Trend Data (Last 6 months)
+  const trends = ref([
+    { month: 'Oct 2025', amount: 5000 },
+    { month: 'Nov 2025', amount: 6500 },
+    { month: 'Dec 2025', amount: 5000 },
+    { month: 'Jan 2026', amount: 5000 },
+    { month: 'Feb 2026', amount: 6500 },
+    { month: 'Mar 2026', amount: 17000 },
+    { month: 'Apr 2026', amount: 5000 }
+  ])
 
   // Actions
-  const initializePayments = async () => {
-    isLoading.value = true
-    error.value = ''
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      weeks.value = generateMockWeeks()
-      transactions.value = generateMockTransactions()
-    } catch (err) {
-      error.value = 'Failed to load payment data'
-      console.error('Payment initialization error:', err)
-    } finally {
-      isLoading.value = false
+  const addPayment = (payment: Omit<PaymentRecord, 'id' | 'status'>) => {
+    const newPayment: PaymentRecord = {
+      ...payment,
+      id: `PAY-2026-${String(history.value.length + 1).padStart(3, '0')}`,
+      status: 'completed'
     }
-  }
-
-  const markWeeksAsPaid = async (weekIds: number[]) => {
-    isLoading.value = true
-    error.value = ''
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-
-      const transactionId = `TXN${Date.now()}`
-      const amount = weekIds.reduce((sum: number, weekId: number) => {
-        const week = weeks.value.find((w: any) => w.id === weekId)
-        return sum + (week?.amount || 0)
-      }, 0)
-
-      // Update weeks status
-      weekIds.forEach((weekId: number) => {
-        const week = weeks.value.find((w: any) => w.id === weekId)
-        if (week) {
-          week.status = 'paid'
-          week.paidDate = new Date().toISOString()
-          week.transactionId = transactionId
-        }
-      })
-
-      // Add transaction
-      const newTransaction: Transaction = {
-        id: transactionId,
-        weekIds,
-        amount,
-        currency: 'RWF',
-        status: 'completed',
-        createdAt: new Date().toISOString(),
-        completedAt: new Date().toISOString(),
-        method: 'mobile_money',
-        reference: `REF${Date.now()}`
-      }
-
-      transactions.value.unshift(newTransaction)
-
-      return true
-    } catch (err) {
-      error.value = 'Failed to process payment'
-      console.error('Payment processing error:', err)
-      return false
-    } finally {
-      isLoading.value = false
-    }
-  }
-
-  const getWeekById = (id: number) => {
-    return weeks.value.find((week: any) => week.id === id)
-  }
-
-  const getTransactionById = (id: string) => {
-    return transactions.value.find((transaction: any) => transaction.id === id)
-  }
-
-  const getWeeksByTransaction = (transactionId: string) => {
-    const transaction = getTransactionById(transactionId)
-    if (!transaction) return []
+    history.value.unshift(newPayment)
     
-    return weeks.value.filter((week: any) => transaction.weekIds.includes(week.id))
+    // Update current month trend
+    const currentMonth = new Date().toLocaleString('default', { month: 'short', year: 'numeric' })
+    const trendIndex = trends.value.findIndex(t => t.month === currentMonth)
+    if (trendIndex !== -1) {
+      trends.value[trendIndex].amount += payment.amount
+    } else {
+      trends.value.push({ month: currentMonth, amount: payment.amount })
+    }
   }
 
-  const refreshData = async () => {
-    await initializePayments()
-  }
+  // ── Backward Compatibility for UserDashboard.vue ──
+  const paidWeeks = ref<any[]>([])
+  const recentTransactions = ref<any[]>([])
 
-  // Initialize store
-  const init = () => {
-    initializePayments()
+  const initializePayments = async () => {
+    // Simulate loading old dashboard data
+    await new Promise(resolve => setTimeout(resolve, 500))
+    paidWeeks.value = Array.from({ length: 42 }, (_, i) => ({ id: i, amount: 5000 }))
+    recentTransactions.value = history.value.map(p => ({
+      id: p.id,
+      amount: p.amount,
+      createdAt: p.date,
+      status: p.status,
+      weekIds: [1, 2]
+    }))
   }
 
   return {
-    // State
-    weeks,
-    transactions,
-    isLoading,
-    error,
+    // New Client Logic
+    history,
+    trends,
+    addPayment,
     
-    // Computed
-    unpaidWeeks,
-    overdueWeeks,
+    // Legacy/Dashboard Support
     paidWeeks,
-    upcomingWeeks,
-    totalDebt,
     recentTransactions,
-    successfulTransactions,
-    failedTransactions,
-    
-    // Actions
-    initializePayments,
-    markWeeksAsPaid,
-    getWeekById,
-    getTransactionById,
-    getWeeksByTransaction,
-    refreshData,
-    init
+    initializePayments
   }
 })

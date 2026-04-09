@@ -213,7 +213,8 @@ const callCustomer = (c: any) => {
 .overdue-label { font-size: 11px; color: #94a3b8; }
 
 .reminder-details { display: flex; gap: 24px; margin-bottom: 14px; flex-wrap: wrap; }
-.reminder-detail { }
+/* .reminder-detail { }
+ */
 .detail-label { display: block; font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; margin-bottom: 2px; }
 .detail-value { font-size: 14px; font-weight: 600; color: #1e293b; }
 .detail-value--danger { color: #dc2626; }

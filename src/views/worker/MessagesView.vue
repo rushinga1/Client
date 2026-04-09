@@ -95,33 +95,33 @@ const chatContainer = ref<HTMLElement | null>(null)
 
 const conversations = ref([
   {
-    id: 1, name: 'Uwimana Jean Pierre', role: 'Customer • Kiyovu', lastMessage: 'Yego, nashyize amafaranga', time: '10m', unread: true, unreadCount: 2,
+    id: 1, name: 'Jean Pierre (Assigned Agent)', role: 'Field Representative • Kiyovu', lastMessage: 'Thank you, I have confirmed your payment.', time: '10m', unread: true, unreadCount: 2,
     messages: [
-      { id: 1, text: 'Muraho! Urashaka kumenya niba nashyize amafaranga y\'iyi cyumweru?', sent: false, time: '10:20 AM' },
-      { id: 2, text: 'Yego, ndashaka kumenya. Niba utabishyize, wahita ubikora.', sent: true, time: '10:22 AM' },
-      { id: 3, text: 'Yego, nashyize amafaranga', sent: false, time: '10:30 AM' },
+      { id: 1, text: 'Hello, I just made my weekly payment via MoMo. Can you confirm?', sent: true, time: '10:20 AM' },
+      { id: 2, text: 'Hello! Let me check the system for you...', sent: false, time: '10:22 AM' },
+      { id: 3, text: 'Thank you, I have confirmed your payment. Your service will remain active.', sent: false, time: '10:30 AM' },
     ]
   },
   {
-    id: 2, name: 'Support Team', role: 'AGRUNI Support', lastMessage: 'Your weekly report has been approved', time: '1h', unread: true, unreadCount: 1,
+    id: 2, name: 'Agruni Support', role: 'Customer Service Center', lastMessage: 'Your inquiry has been resolved.', time: '1h', unread: true, unreadCount: 1,
     messages: [
-      { id: 1, text: 'Hi Agent Marie, your weekly report for Nyarugenge sector has been submitted successfully.', sent: false, time: '9:00 AM' },
-      { id: 2, text: 'Thank you! Is there anything I need to update?', sent: true, time: '9:15 AM' },
-      { id: 3, text: 'Your weekly report has been approved. Good work!', sent: false, time: '9:45 AM' },
+      { id: 1, text: 'Hello Support, I noticed my debt balance hasn\'t updated after yesterday\'s payment.', sent: true, time: '9:00 AM' },
+      { id: 2, text: 'We apologize for the delay. Our system updates every 24 hours.', sent: false, time: '9:15 AM' },
+      { id: 3, text: 'I have manually refreshed it now. Your inquiry has been resolved.', sent: false, time: '9:45 AM' },
     ]
   },
   {
-    id: 3, name: 'Habimana Patrick', role: 'Customer • Kimihurura', lastMessage: 'I will pay tomorrow morning', time: '2h', unread: false, unreadCount: 0,
+    id: 3, name: 'Patrick (Collection Lead)', role: 'District Supervisor', lastMessage: 'I will check on your request.', time: '2h', unread: false, unreadCount: 0,
     messages: [
-      { id: 1, text: 'Hello Patrick, this is a reminder that your weekly payment is overdue by 13 days.', sent: true, time: '8:00 AM' },
-      { id: 2, text: 'I know, I have been having some issues. I will pay tomorrow morning', sent: false, time: '8:30 AM' },
+      { id: 1, text: 'Hi Patrick, can the collection time be moved to 8 AM for my area?', sent: true, time: '8:00 AM' },
+      { id: 2, text: 'I will check on your request with the local team and get back to you.', sent: false, time: '8:30 AM' },
     ]
   },
   {
-    id: 4, name: 'Ingabire Diane', role: 'Customer • Gisozi', lastMessage: 'Murakoze cyane', time: '1d', unread: false, unreadCount: 0,
+    id: 4, name: 'Diane (Operations)', role: 'Service Coordinator', lastMessage: 'Murakoze cyane', time: '1d', unread: false, unreadCount: 0,
     messages: [
-      { id: 1, text: 'Muraho Diane, payment yanjye iracyari?', sent: true, time: 'Yesterday 3:00 PM' },
-      { id: 2, text: 'Nashyize kuri MoMo igiciro cyose. Murakoze cyane', sent: false, time: 'Yesterday 4:15 PM' },
+      { id: 1, text: 'Muraho Diane, is there a special collection scheduled for this weekend?', sent: true, time: 'Yesterday 3:00 PM' },
+      { id: 2, text: 'Yego, there is a community cleaning event. Murakoze cyane.', sent: false, time: 'Yesterday 4:15 PM' },
     ]
   },
 ])

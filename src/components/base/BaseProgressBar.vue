@@ -5,7 +5,7 @@
       <span v-if="showValue" class="base-progress-bar__value">{{ percentage }}%</span>
     </div>
     
-    <div class="base-progress-bar__track">
+    <div class="base-progress-bar__track" :class="`base-progress-bar__track--${props.size}`">
       <div
         class="base-progress-bar__fill"
         :class="fillClasses"

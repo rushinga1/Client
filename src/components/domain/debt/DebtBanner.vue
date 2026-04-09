@@ -22,18 +22,16 @@
       <div class="debt-banner__actions">
         <BaseButton
           variant="primary"
-          size="sm"
+          size="md"
+          class="debt-banner__pay-btn"
           @click="$emit('payNow')"
         >
+          <Icon icon="ph:credit-card-bold" />
           {{ $t('payment.payNow') }}
         </BaseButton>
       </div>
     </div>
     
-    <div v-if="monthsBehind >= 2" class="debt-banner__pulse">
-      <div class="pulse-ring"></div>
-      <div class="pulse-ring pulse-ring-2"></div>
-    </div>
   </div>
 </template>
 
@@ -72,9 +70,9 @@ const iconName = computed(() => {
 })
 
 const title = computed(() => {
-  if (props.monthsBehind >= 2) return 'debt.title.danger'
-  if (props.monthsBehind === 1) return 'debt.title.warning'
-  return 'debt.title.default'
+  if (props.monthsBehind >= 2) return 'Critical: Immediate Action Required'
+  if (props.monthsBehind === 1) return 'Attention: Outstanding Balance'
+  return 'Payment Summary'
 })
 
 // Utility function
@@ -124,17 +122,15 @@ const formatCurrency = (amount: number, currency: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--space-10);
-  height: var(--space-10);
-  border-radius: var(--radius-full);
-  background-color: currentColor;
-  color: var(--color-text-inverse);
+  width: var(--space-12);
+  height: var(--space-12);
+  color: currentColor;
   flex-shrink: 0;
 }
 
 .debt-banner__icon svg {
-  width: 20px;
-  height: 20px;
+  width: 32px;
+  height: 32px;
 }
 
 .debt-banner__text {
@@ -189,48 +185,24 @@ const formatCurrency = (amount: number, currency: string) => {
   flex-shrink: 0;
 }
 
-/* Pulse effect for danger state */
-.debt-banner__pulse {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  overflow: hidden;
+.debt-banner__pay-btn {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700));
+  border: none;
+  transition: all var(--duration-fast) var(--ease-default);
 }
 
-.pulse-ring {
-  position: absolute;
-  top: 50%;
-  left: var(--space-6);
-  width: var(--space-10);
-  height: var(--space-10);
-  border-radius: 50%;
-  border: 2px solid var(--color-danger);
-  transform: translate(-50%, -50%);
-  animation: pulse-ring 2s infinite;
+.debt-banner__pay-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-.pulse-ring-2 {
-  animation-delay: 1s;
+.debt-banner__pay-btn svg {
+  margin-right: var(--space-2);
 }
 
-@keyframes pulse-ring {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.3;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(3);
-    opacity: 0;
-  }
-}
-
-/* Warning state pulse */
-.debt-banner--warning .pulse-ring {
-  border-color: var(--color-warning);
-}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

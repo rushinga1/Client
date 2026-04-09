@@ -15,21 +15,21 @@
     <section class="welcome-banner" aria-label="Welcome banner">
       <div class="welcome-content">
         <div class="welcome-text">
-          <h2 class="welcome-title">Muraho, Agent Marie</h2>
+          <h2 class="welcome-title">Muraho, Marie</h2>
           <p class="welcome-subtitle">Here's your overview for today — {{ todayFormatted }}</p>
         </div>
         <div class="welcome-stats">
           <div class="welcome-stat">
-            <span class="welcome-stat-value">{{ paidThisWeek }}</span>
+            <span class="welcome-stat-value">{{ paidMonthsCount }} / 12</span>
             <span class="welcome-stat-label">
-              <Icon icon="ph:check-circle" class="stat-icon" /> Paid
+              <Icon icon="ph:check-circle" class="stat-icon" /> months paid in the year
             </span>
           </div>
           <div class="welcome-stat-divider"></div>
           <div class="welcome-stat">
-            <span class="welcome-stat-value welcome-stat-value--danger">{{ unpaidThisWeek }}</span>
+            <span class="welcome-stat-value welcome-stat-value--danger">{{ unpaidMonthsCount }} / 12</span>
             <span class="welcome-stat-label">
-              <Icon icon="ph:x-circle" class="stat-icon" /> Unpaid
+              <Icon icon="ph:x-circle" class="stat-icon" /> debts in the year
             </span>
           </div>
         </div>
@@ -37,13 +37,14 @@
     </section>
 
     <!-- Warning Alert — Expanded with at-risk customers -->
-    <section v-if="warningCount > 0" class="warning-alert-section" aria-label="At-risk customers warning">
+    <!-- Status Notice -->
+    <section class="warning-alert-section" aria-label="Eligibility status">
       <div class="warning-alert-header" @click="warningExpanded = !warningExpanded">
         <div class="warning-alert-icon">
-          <Icon icon="ph:warning-circle-fill" />
+          <Icon icon="ph:info" />
         </div>
         <div class="warning-alert-content">
-          <strong>{{ warningCount }} customers</strong> are in the warning zone and approaching ban status.
+          You are <strong>{{ isEligible ? 'eligible to access the service' : 'approaching ban status' }}</strong>.
         </div>
         <div class="warning-alert-toggle">
           <Icon :icon="warningExpanded ? 'ph:caret-up' : 'ph:caret-down'" />
@@ -51,138 +52,33 @@
       </div>
       <transition name="expand">
         <div v-if="warningExpanded" class="warning-alert-details">
-          <div v-for="customer in atRiskCustomers" :key="customer.id" class="at-risk-item">
-            <div class="at-risk-avatar">
-              <span>{{ getInitials(customer.name) }}</span>
-            </div>
+          <div class="at-risk-item">
             <div class="at-risk-info">
-              <div class="at-risk-name">{{ customer.name }}</div>
-              <div class="at-risk-meta">{{ customer.village }} • {{ customer.weeksUnpaid }} weeks unpaid</div>
+              <div class="at-risk-name">Payment Summary (Last 4 Months)</div>
+              <div class="at-risk-meta">You have maintained consistent payments over the last 4 months, confirming your eligibility.</div>
             </div>
-            <button class="at-risk-action" @click.stop="sendReminder(customer.id)" :aria-label="'Send reminder to ' + customer.name">
-              <Icon icon="ph:bell-ringing" />
-              <span>Remind</span>
-            </button>
           </div>
-          <router-link to="/reminders" class="warning-view-all" @click.stop>
-            <span>View all {{ warningCount }} customers</span>
-            <Icon icon="ph:arrow-right" />
-          </router-link>
         </div>
       </transition>
     </section>
 
     <!-- Metrics Grid -->
-    <section class="metrics-grid" aria-label="Key metrics">
-      <article
-        class="metric-card"
-        @click="$router.push('/houses')"
-        aria-label="Total Customers: 120"
-        tabindex="0"
-        @keydown.enter="$router.push('/houses')"
-      >
-        <div class="metric-icon metric-icon--primary">
-          <Icon icon="ph:house-line" />
-        </div>
-        <div class="metric-content">
-          <div class="metric-value">{{ totalCustomers }}</div>
-          <div class="metric-label">Total Customers</div>
-          <div class="metric-period">All time</div>
-        </div>
-        <div class="metric-sparkline" aria-hidden="true">
-          <svg viewBox="0 0 56 24" class="sparkline sparkline--primary">
-            <polyline :points="sparklinePoints.customers" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-      </article>
-
-      <article
-        class="metric-card"
-        @click="$router.push('/houses')"
-        :aria-label="'Paid This Week: ' + paidThisWeek + ', ' + paidPercentage + '% of total'"
-        tabindex="0"
-        @keydown.enter="$router.push('/houses')"
-      >
-        <div class="metric-icon metric-icon--success">
-          <Icon icon="ph:check-circle" />
-        </div>
-        <div class="metric-content">
-          <div class="metric-value">{{ paidThisWeek }}</div>
-          <div class="metric-label">Paid This Week</div>
-          <div class="metric-change metric-change--positive">
-            <Icon icon="ph:trend-up" />
-            <span>+5 vs last week</span>
-          </div>
-        </div>
-        <div class="metric-sparkline" aria-hidden="true">
-          <svg viewBox="0 0 56 24" class="sparkline sparkline--success">
-            <polyline :points="sparklinePoints.paid" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-      </article>
-
-      <article
-        class="metric-card"
-        @click="$router.push('/houses')"
-        :aria-label="'Unpaid This Week: ' + unpaidThisWeek + ', ' + unpaidPercentage + '% of total'"
-        tabindex="0"
-        @keydown.enter="$router.push('/houses')"
-      >
-        <div class="metric-icon metric-icon--danger">
-          <Icon icon="ph:x-circle" />
-        </div>
-        <div class="metric-content">
-          <div class="metric-value">{{ unpaidThisWeek }}</div>
-          <div class="metric-label">Unpaid This Week</div>
-          <div class="metric-change metric-change--negative">
-            <Icon icon="ph:trend-down" />
-            <span>−3 vs last week</span>
-          </div>
-        </div>
-        <div class="metric-sparkline" aria-hidden="true">
-          <svg viewBox="0 0 56 24" class="sparkline sparkline--danger">
-            <polyline :points="sparklinePoints.unpaid" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-      </article>
-
-      <article
-        class="metric-card"
-        @click="$router.push('/banned')"
-        :aria-label="'Banned Houses: ' + bannedHouses"
-        tabindex="0"
-        @keydown.enter="$router.push('/banned')"
-      >
-        <div class="metric-icon metric-icon--warning">
-          <Icon icon="ph:prohibit" />
-        </div>
-        <div class="metric-content">
-          <div class="metric-value">{{ bannedHouses }}</div>
-          <div class="metric-label">Banned Houses</div>
-          <div class="metric-period">This month</div>
-        </div>
-        <div class="metric-arrow">
-          <Icon icon="ph:arrow-right" />
-        </div>
-      </article>
-    </section>
-
     <!-- Main Grid -->
     <div class="dashboard-grid">
       <!-- Recent Payments -->
       <section class="dashboard-card" aria-label="Recent payments">
         <div class="card-header">
           <h3><Icon icon="ph:receipt" /> Recent Payments</h3>
-          <router-link to="/houses" class="view-all-link">View all <Icon icon="ph:arrow-right" /></router-link>
+          <router-link to="/history" class="view-all-link">View all <Icon icon="ph:arrow-right" /></router-link>
         </div>
         <div class="payments-list">
           <div v-for="payment in recentPayments" :key="payment.id" class="payment-item">
             <div class="payment-avatar">
-              <span>{{ getInitials(payment.name) }}</span>
+              <Icon :icon="payment.method === 'MoMo' ? 'ph:device-mobile' : 'ph:bank'" width="20" height="20" />
             </div>
             <div class="payment-details">
-              <div class="payment-name">{{ payment.name }}</div>
-              <div class="payment-meta">{{ payment.village }} • {{ payment.time }}</div>
+              <div class="payment-name">{{ payment.method }}</div>
+              <div class="payment-meta">{{ payment.date }} • {{ payment.time }}</div>
             </div>
             <div class="payment-amount">
               <span class="amount-value">{{ payment.amount.toLocaleString() }}</span>
@@ -198,153 +94,111 @@
           <h3><Icon icon="ph:lightning" /> Quick Actions</h3>
         </div>
         <div class="quick-actions">
-          <button class="action-btn action-btn--primary" @click="$router.push('/register')" aria-label="Register a new customer">
+          <button class="action-btn action-btn--primary" @click="$router.push('/pay')" aria-label="Pay now">
             <div class="action-btn-icon">
-              <Icon icon="ph:user-plus" />
+              <Icon icon="ph:currency-circle-dollar" />
             </div>
             <div class="action-btn-text">
-              <span class="action-btn-title">Register Customer</span>
-              <span class="action-btn-desc">Add new household</span>
+              <span class="action-btn-title">Pay Now</span>
+              <span class="action-btn-desc">Make a new payment</span>
             </div>
           </button>
-          <button class="action-btn action-btn--blue" @click="$router.push('/houses')" aria-label="View all houses">
+          <button class="action-btn action-btn--blue" @click="$router.push('/reminders')" aria-label="Reminders">
             <div class="action-btn-icon">
-              <Icon icon="ph:house-line" />
+              <Icon icon="ph:bell" />
             </div>
             <div class="action-btn-text">
-              <span class="action-btn-title">View Houses</span>
-              <span class="action-btn-desc">Check payment status</span>
+              <span class="action-btn-title">Reminders</span>
+              <span class="action-btn-desc">View your reminders</span>
             </div>
           </button>
-          <button class="action-btn action-btn--amber" @click="$router.push('/reminders')" :aria-label="warningCount + ' pending warnings'">
+          <button class="action-btn action-btn--amber" @click="$router.push('/account')" aria-label="Account">
             <div class="action-btn-icon">
-              <Icon icon="ph:warning-circle" />
+              <Icon icon="ph:user-circle" />
             </div>
             <div class="action-btn-text">
-              <span class="action-btn-title">View Reminders</span>
-              <span class="action-btn-desc">{{ warningCount }} pending warnings</span>
+              <span class="action-btn-title">Account</span>
+              <span class="action-btn-desc">Manage your profile</span>
             </div>
           </button>
-          <button class="action-btn action-btn--teal" @click="$router.push('/announcements')" aria-label="Send an announcement">
+          <button class="action-btn action-btn--teal" @click="$router.push('/notification')" aria-label="Notifications">
             <div class="action-btn-icon">
               <Icon icon="ph:megaphone-simple" />
             </div>
             <div class="action-btn-text">
-              <span class="action-btn-title">Send Announcement</span>
-              <span class="action-btn-desc">Notify customers</span>
+              <span class="action-btn-title">Notification</span>
+              <span class="action-btn-desc">View latest announcements</span>
             </div>
           </button>
         </div>
       </section>
 
-      <!-- Payment by Category -->
-      <section class="dashboard-card" aria-label="Payment breakdown by category">
+      <!-- Announcements -->
+      <section class="dashboard-card" aria-label="Latest Announcements">
         <div class="card-header">
-          <h3><Icon icon="ph:chart-donut" /> Payment by Category</h3>
+          <h3><Icon icon="ph:megaphone" /> Announcements</h3>
         </div>
-        <div class="category-stats">
-          <div class="category-item">
-            <div class="category-info">
-              <div class="category-dot category-dot--rich"></div>
-              <span class="category-name">Abakire (Rich)</span>
+        <div class="announcements-list">
+          <div v-for="announcement in recentAnnouncements" :key="announcement.id" class="announcement-item">
+            <div class="announcement-content">
+              <h4 class="announcement-title">{{ announcement.title }}</h4>
+              <p class="announcement-desc">{{ announcement.description }}</p>
+              <div class="announcement-meta">Posted by {{ announcement.author }}</div>
             </div>
-            <div class="category-bar-wrapper">
-              <div class="category-bar category-bar--rich" :style="{ width: '75%' }"></div>
-            </div>
-            <div class="category-numbers">
-              <span class="category-paid">15</span>/<span class="category-total">20</span>
-            </div>
-          </div>
-          <div class="category-item">
-            <div class="category-info">
-              <div class="category-dot category-dot--medium"></div>
-              <span class="category-name">Icyiciro cya 2 (Medium)</span>
-            </div>
-            <div class="category-bar-wrapper">
-              <div class="category-bar category-bar--medium" :style="{ width: '60%' }"></div>
-            </div>
-            <div class="category-numbers">
-              <span class="category-paid">30</span>/<span class="category-total">50</span>
-            </div>
-          </div>
-          <div class="category-item">
-            <div class="category-info">
-              <div class="category-dot category-dot--poor"></div>
-              <span class="category-name">Abakene (Poor)</span>
-            </div>
-            <div class="category-bar-wrapper">
-              <div class="category-bar category-bar--poor" :style="{ width: '45%' }"></div>
-            </div>
-            <div class="category-numbers">
-              <span class="category-paid">18</span>/<span class="category-total">40</span>
-            </div>
-          </div>
-          <div class="category-item">
-            <div class="category-info">
-              <div class="category-dot category-dot--business"></div>
-              <span class="category-name">Business Org.</span>
-            </div>
-            <div class="category-bar-wrapper">
-              <div class="category-bar category-bar--business" :style="{ width: '80%' }"></div>
-            </div>
-            <div class="category-numbers">
-              <span class="category-paid">8</span>/<span class="category-total">10</span>
-            </div>
-          </div>
-        </div>
-        <div class="category-legend">
-          <div class="legend-row">
-            <span class="legend-label">Rich: <strong>5,700 RWF</strong>/week</span>
-            <span class="legend-label">Medium: <strong>3,800 RWF</strong>/week</span>
-          </div>
-          <div class="legend-row">
-            <span class="legend-label">Poor: <strong>2,000 RWF</strong>/week</span>
-            <span class="legend-label">Business: <strong>TBD</strong></span>
           </div>
         </div>
       </section>
 
-      <!-- Weekly Collection Chart -->
-      <section class="dashboard-card" aria-label="Weekly collections chart">
+      <!-- Client Profile -->
+      <section class="dashboard-card" aria-label="Client Profile">
         <div class="card-header">
-          <h3><Icon icon="ph:chart-bar" /> This Week's Collections</h3>
+          <h3><Icon icon="ph:user-focus" /> Profile Description</h3>
         </div>
-        <div class="chart-container">
-          <div class="chart-bars">
-            <div v-for="(day, index) in weeklyData" :key="index" class="chart-col">
-              <div class="chart-bar-stack">
-                <div
-                  class="chart-bar chart-bar--paid"
-                  :style="{ height: `${day.paidPct}%` }"
-                  :title="`Paid: ${day.paid}`"
-                ></div>
-                <div
-                  class="chart-bar chart-bar--unpaid"
-                  :style="{ height: `${day.unpaidPct}%` }"
-                  :title="`Unpaid: ${day.unpaid}`"
-                ></div>
-              </div>
-              <span class="chart-day" :class="{ 'chart-day--today': day.isToday }">{{ day.day }}</span>
-            </div>
+        <div class="profile-details">
+          <div class="profile-avatar">
+            <span>{{ clientProfile.initials }}</span>
           </div>
-          <div class="chart-legend">
-            <div class="legend-item">
-              <div class="legend-dot legend-dot--paid"></div>
-              <span><Icon icon="ph:check" class="legend-icon" /> Paid</span>
+          <div class="profile-info">
+            <h4 class="profile-name">{{ clientProfile.name }}</h4>
+            <p class="profile-meta"><Icon icon="ph:map-pin" /> {{ clientProfile.address }}</p>
+            <p class="profile-meta"><Icon icon="ph:phone" /> {{ clientProfile.phone }}</p>
+            <div class="profile-status">
+              <span class="status-badge" :class="'status-badge--' + clientProfile.status.toLowerCase()">
+                {{ clientProfile.status }}
+              </span>
+              <span class="member-since">Member since {{ clientProfile.joinDate }}</span>
             </div>
-            <div class="legend-item">
-              <div class="legend-dot legend-dot--unpaid"></div>
-              <span><Icon icon="ph:x" class="legend-icon" /> Unpaid</span>
+            <div class="profile-details-grid">
+              <div class="detail-card">
+                <span class="detail-label">District</span>
+                <span class="detail-value">{{ clientProfile.district }}</span>
+              </div>
+              <div class="detail-card">
+                <span class="detail-label">Sector</span>
+                <span class="detail-value">{{ clientProfile.sector }}</span>
+              </div>
+              <div class="detail-card">
+                <span class="detail-label">Cell</span>
+                <span class="detail-value">{{ clientProfile.cell }}</span>
+              </div>
+              <div class="detail-card">
+                <span class="detail-label">Village</span>
+                <span class="detail-value">{{ clientProfile.village }}</span>
+              </div>
+              <div class="detail-card">
+                <span class="detail-label">Agent</span>
+                <span class="detail-value">{{ clientProfile.agent }}</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- No Cash Notice -->
+    <!-- Digital Payment Encouragement Notice -->
     <div class="no-cash-notice" role="alert">
-      <Icon icon="ph:info" />
-      <span>All payments are processed digitally via MoMo or bank transfer. <strong>Do not accept cash payments.</strong></span>
+      <Icon icon="ph:shield-check" />
+      <span>For your convenience and security, please make all payments digitally using <strong>MTN MoMo</strong>, <strong>Airtel Money</strong>, or <strong>Bank Card</strong>. Enjoy a fast, safe, and paperless payment experience!</span>
     </div>
   </div>
 </template>
@@ -359,52 +213,12 @@ const todayFormatted = new Date().toLocaleDateString('en-US', {
 })
 
 // ── Core Metrics ──
-const totalCustomers = ref(120)
-const paidThisWeek = ref(71)
-const unpaidThisWeek = computed(() => totalCustomers.value - paidThisWeek.value - bannedHouses.value)
-const bannedHouses = ref(5)
-const warningCount = ref(12)
-
-const paidPercentage = computed(() => Math.round((paidThisWeek.value / totalCustomers.value) * 100))
-const unpaidPercentage = computed(() => Math.round((unpaidThisWeek.value / totalCustomers.value) * 100))
+const paidMonthsCount = ref(8)
+const unpaidMonthsCount = ref(4)
+const isEligible = ref(true)
 
 // ── At-Risk Customers (expanded warning) ──
 const warningExpanded = ref(false)
-const atRiskCustomers = ref([
-  { id: 101, name: 'Uwimana Jean', village: 'Kiyovu', weeksUnpaid: 3 },
-  { id: 102, name: 'Mukeshimana Alice', village: 'Gisozi', weeksUnpaid: 2 },
-  { id: 103, name: 'Nzeyimana Claude', village: 'Remera', weeksUnpaid: 2 },
-])
-
-const sendReminder = (customerId: number) => {
-  // TODO: Wire to API
-  console.log('Sending reminder to customer', customerId)
-}
-
-// ── Sparkline Data (last 7 days) ──
-const sparklineData = {
-  customers: [105, 108, 110, 112, 115, 118, 120],
-  paid:      [52, 58, 60, 63, 65, 68, 71],
-  unpaid:    [50, 48, 47, 46, 45, 44, 44],
-}
-
-const sparklinePoints = computed(() => {
-  const toPoints = (data: number[]) => {
-    const max = Math.max(...data)
-    const min = Math.min(...data)
-    const range = max - min || 1
-    return data.map((v, i) => {
-      const x = (i / (data.length - 1)) * 56
-      const y = 22 - ((v - min) / range) * 20
-      return `${x},${y}`
-    }).join(' ')
-  }
-  return {
-    customers: toPoints(sparklineData.customers),
-    paid: toPoints(sparklineData.paid),
-    unpaid: toPoints(sparklineData.unpaid),
-  }
-})
 
 // ── Sync Status ──
 const lastSyncTime = ref(new Date())
@@ -440,23 +254,34 @@ onUnmounted(() => {
 
 // ── Recent Payments ──
 const recentPayments = ref([
-  { id: 1, name: 'Uwimana Jean', village: 'Kiyovu', amount: 5700, time: '10 min ago' },
-  { id: 2, name: 'Mukeshimana Alice', village: 'Nyamirambo', amount: 2000, time: '25 min ago' },
-  { id: 3, name: 'Habimana Patrick', village: 'Kimihurura', amount: 3800, time: '1 hour ago' },
-  { id: 4, name: 'Ingabire Diane', village: 'Gisozi', amount: 2000, time: '2 hours ago' },
-  { id: 5, name: 'Nzeyimana Claude', village: 'Remera', amount: 5700, time: '3 hours ago' },
+  { id: 1, method: 'MoMo', date: 'Apr 8', amount: 5700, time: '10:00 AM' },
+  { id: 2, method: 'Bank Transfer', date: 'Apr 1', amount: 5700, time: '09:15 AM' },
+  { id: 3, method: 'MoMo', date: 'Mar 24', amount: 5700, time: '14:30 PM' },
+  { id: 4, method: 'Bank Transfer', date: 'Mar 17', amount: 5700, time: '11:45 AM' },
 ])
 
-// ── Weekly Chart ──
-const weeklyData = ref([
-  { day: 'Mon', paid: 18, unpaid: 8, paidPct: 69, unpaidPct: 31, isToday: false },
-  { day: 'Tue', paid: 22, unpaid: 5, paidPct: 81, unpaidPct: 19, isToday: false },
-  { day: 'Wed', paid: 15, unpaid: 12, paidPct: 56, unpaidPct: 44, isToday: false },
-  { day: 'Thu', paid: 16, unpaid: 9, paidPct: 64, unpaidPct: 36, isToday: true },
-  { day: 'Fri', paid: 0, unpaid: 0, paidPct: 0, unpaidPct: 0, isToday: false },
-  { day: 'Sat', paid: 0, unpaid: 0, paidPct: 0, unpaidPct: 0, isToday: false },
-  { day: 'Sun', paid: 0, unpaid: 0, paidPct: 0, unpaidPct: 0, isToday: false },
+// ── Announcements ──
+const recentAnnouncements = ref([
+  { id: 1, title: 'Umuganda Update', description: 'Monthly community work has been rescheduled to next Sunday.', author: 'Emmanuel K.' },
+  { id: 2, title: 'New Payment Method', description: 'Clients can now use Airtel Money to pay their monthly dues.', author: 'Jean-Paul N.' },
+  { id: 3, title: 'System Maintenance', description: 'The dashboard will be under short maintenance tonight.', author: 'Admin Team' },
+  { id: 4, title: 'Congratulations', description: 'Kacyiru sector recorded 100% fast compliance this week.', author: 'Marie C.' }
 ])
+
+// ── Client Profile ──
+const clientProfile = ref({
+  name: 'Marie Claire',
+  initials: 'MC',
+  address: 'Kacyiru, Kigali',
+  phone: '+250 788 123 456',
+  status: 'Active',
+  joinDate: 'Jan 2024',
+  district: 'Gasabo',
+  sector: 'Kacyiru',
+  cell: 'Kamukina',
+  village: 'Kanserege',
+  agent: 'Jean-Paul N.'
+})
 
 // ── Helpers ──
 const getInitials = (name: string) => {
@@ -634,7 +459,7 @@ const getInitials = (name: string) => {
 }
 
 .welcome-stat-value--danger {
-  color: #fca5a5;
+  color: var(--color-danger-300);
 }
 
 .welcome-stat-label {
@@ -1113,172 +938,151 @@ const getInitials = (name: string) => {
   color: var(--color-neutral-400);
 }
 
-/* ── Category Stats ── */
-.category-stats {
+/* ── Announcements ── */
+.announcements-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-}
-
-.category-item {
-  display: flex;
-  align-items: center;
   gap: var(--space-3);
 }
 
-.category-info {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: 170px;
+.announcement-item {
+  padding: var(--space-3);
+  background: var(--color-neutral-50);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-primary-500);
 }
 
-.category-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
+.announcement-title {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 4px 0;
+}
+
+.announcement-desc {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin: 0 0 6px 0;
+}
+
+.announcement-meta {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-neutral-400);
+  font-style: italic;
+}
+
+/* ── Client Profile ── */
+.profile-details {
+  display: flex;
+  gap: var(--space-5);
+  margin-top: var(--space-2);
+  align-items: flex-start;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
   flex-shrink: 0;
 }
 
-.category-dot--rich     { background: var(--color-portal-admin); }
-.category-dot--medium   { background: var(--color-primary-500); }
-.category-dot--poor     { background: var(--color-success); }
-.category-dot--business { background: var(--color-portal-worker); }
+.profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
 
-.category-name {
+.profile-name {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.profile-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.profile-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+}
+
+.status-badge--active {
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.member-since {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--color-neutral-400);
+}
+
+.profile-details-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  width: 100%;
+}
+
+.detail-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+  background: var(--color-neutral-50);
+  border: 1px solid var(--color-neutral-100);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-primary-400);
+  min-width: 100px;
+  flex: 1 1 auto;
+}
+
+.detail-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.detail-value {
   font-family: var(--font-body);
   font-size: var(--text-sm);
   color: var(--color-text-primary);
-  font-weight: var(--font-medium);
-}
-
-.category-bar-wrapper {
-  flex: 1;
-  height: 8px;
-  background: var(--color-neutral-100);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-}
-
-.category-bar {
-  height: 100%;
-  border-radius: var(--radius-sm);
-  transition: width 0.5s var(--ease-default);
-}
-
-.category-bar--rich     { background: linear-gradient(90deg, var(--color-portal-admin), #6d28d9); }
-.category-bar--medium   { background: linear-gradient(90deg, var(--color-primary-500), var(--color-primary-600)); }
-.category-bar--poor     { background: linear-gradient(90deg, var(--color-success), var(--color-success-dark)); }
-.category-bar--business { background: linear-gradient(90deg, var(--color-warning), var(--color-warning-dark)); }
-
-.category-numbers {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
   font-weight: var(--font-semibold);
-  color: var(--color-text-secondary);
-  min-width: 44px;
-  text-align: right;
 }
-
-.category-paid { color: var(--color-text-primary); }
-
-.category-legend {
-  margin-top: var(--space-5);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-neutral-100);
-}
-
-.legend-row {
-  display: flex;
-  gap: var(--space-6);
-  margin-bottom: 4px;
-}
-
-.legend-label {
-  font-family: var(--font-body);
-  font-size: var(--text-xs);
-  color: var(--color-neutral-400);
-}
-
-/* ── Chart ── */
-.chart-container { margin-top: var(--space-2); }
-
-.chart-bars {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  height: 180px;
-  gap: var(--space-3);
-  padding-bottom: var(--space-1);
-}
-
-.chart-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  gap: var(--space-2);
-}
-
-.chart-bar-stack {
-  flex: 1;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 2px;
-  max-width: 48px;
-}
-
-.chart-bar {
-  width: 100%;
-  border-radius: var(--radius-sm);
-  transition: height 0.4s var(--ease-default);
-  min-height: 2px;
-}
-
-.chart-bar--paid   { background: linear-gradient(180deg, var(--color-success), var(--color-success-dark)); }
-.chart-bar--unpaid { background: linear-gradient(180deg, var(--color-warning), var(--color-warning-dark)); }
-
-.chart-day {
-  font-family: var(--font-body);
-  font-size: var(--text-xs);
-  color: var(--color-neutral-400);
-  font-weight: var(--font-medium);
-}
-
-.chart-day--today {
-  color: var(--color-primary-600);
-  font-weight: var(--font-bold);
-}
-
-.chart-legend {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-5);
-  margin-top: var(--space-4);
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-family: var(--font-body);
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-}
-
-.legend-icon { width: 12px; height: 12px; }
-
-.legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-}
-
-.legend-dot--paid   { background: var(--color-success); }
-.legend-dot--unpaid { background: var(--color-warning); }
 
 /* ── No Cash Notice ── */
 .no-cash-notice {

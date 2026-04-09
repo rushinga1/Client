@@ -236,7 +236,7 @@
       <BaseBottomSheet
         v-if="isMobile"
         v-model="showMobilePaymentSheet"
-        title="{{ $t('payment.confirmPayment') }}"
+        :title="$t('payment.confirmPayment')"
         size="lg"
       >
         <div class="mobile-payment-sheet">

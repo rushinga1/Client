@@ -54,7 +54,11 @@
           <tr
             v-for="(row, index) in paginatedRows"
             :key="getRowKey(row, index)"
-            :class="['table__row', { 'table__row--clickable': clickable }]"
+            :class="[
+              'table__row', 
+              { 'table__row--clickable': clickable },
+              { 'table__row--striped': striped && index % 2 !== 0 }
+            ]"
             @click="handleRowClick(row, index)"
           >
             <td
@@ -126,7 +130,7 @@ import { Icon } from '@iconify/vue'
 import BaseButton from './BaseButton.vue'
 import BaseSkeleton from './BaseSkeleton.vue'
 
-interface TableColumn {
+export interface TableColumn {
   key: string
   label: string
   sortable?: boolean
@@ -153,6 +157,7 @@ interface Props {
   showPagination?: boolean
   pageSize?: number
   rowKey?: string | ((row: any) => string | number)
+  striped?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -163,7 +168,8 @@ const props = withDefaults(defineProps<Props>(), {
   clickable: false,
   showPagination: false,
   pageSize: 10,
-  rowKey: 'id'
+  rowKey: 'id',
+  striped: false
 })
 
 const emit = defineEmits<{
@@ -383,6 +389,10 @@ const getSkeletonWidth = (columnIndex: number) => {
 }
 
 .table__row:hover {
+  background-color: var(--color-neutral-50);
+}
+
+.table__row--striped {
   background-color: var(--color-neutral-50);
 }
 

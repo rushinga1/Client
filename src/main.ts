@@ -18,6 +18,16 @@ const router = createRouter({
       redirect: '/dashboard'
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('./views/LoginView.vue'),
+      meta: {
+        title: 'Sign In',
+        requiresAuth: false,
+        isPublic: true
+      }
+    },
+    {
       path: '/dashboard',
       name: 'dashboard',
       component: WorkerDashboard,
@@ -47,7 +57,7 @@ const router = createRouter({
     {
       path: '/reminders',
       name: 'reminders',
-      component: () => import('./views/worker/RemindersView.vue'),
+      component: () => import('./views/RemindersView.vue'),
       meta: {
         title: 'Reminders',
         requiresAuth: false
@@ -99,6 +109,60 @@ const router = createRouter({
       }
     },
     {
+      path: '/pay',
+      name: 'payment',
+      component: () => import('./views/ServicePaymentView.vue'),
+      meta: {
+        title: 'Service Payment',
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/history',
+      name: 'history',
+      component: () => import('./views/HistoryView.vue'),
+      meta: {
+        title: 'Payment History',
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/debts',
+      name: 'debts',
+      component: () => import('./views/DebtsView.vue'),
+      meta: {
+        title: 'My Debts',
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: () => import('./views/SettingsView.vue'),
+      meta: {
+        title: 'Settings',
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/account',
+      name: 'account',
+      component: () => import('./views/AccountView.vue'),
+      meta: {
+        title: 'Account',
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/help',
+      name: 'help',
+      component: () => import('./views/HelpCenterView.vue'),
+      meta: {
+        title: 'Help Center',
+        requiresAuth: false
+      }
+    },
+    {
       path: '/receipt',
       name: 'receipt',
       component: () => import('./views/ReceiptView.vue'),
@@ -119,10 +183,28 @@ const router = createRouter({
 })
 
 // Navigation guards
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   if (to.meta.title) {
-    document.title = `${to.meta.title} - AGRUNI Worker Portal`
+    document.title = `${to.meta.title} - AGRUNI Client Portal`
   }
+
+  // Import store lazily to avoid Pinia not ready error
+  const { useAuthStore } = await import('./stores/auth.store')
+  const authStore = useAuthStore()
+
+  const isPublic = to.meta.isPublic === true
+  const loggedIn = authStore.isLoggedIn
+
+  if (!isPublic && !loggedIn) {
+    // Not authenticated — redirect to login
+    return next({ name: 'login' })
+  }
+
+  if (isPublic && loggedIn && to.name === 'login') {
+    // Already logged in — redirect away from login
+    return next({ name: 'dashboard' })
+  }
+
   next()
 })
 

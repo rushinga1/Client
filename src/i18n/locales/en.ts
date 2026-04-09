@@ -22,26 +22,38 @@ export default {
     error: 'Error',
     success: 'Success',
     warning: 'Warning',
-    info: 'Info'
+    info: 'Info',
+    download: 'Download',
+    upload: 'Upload',
+    update: 'Update',
+    goBack: 'Go Back',
+    goToAccount: 'Go to Account',
   },
 
   // Navigation
   nav: {
     dashboard: 'Dashboard',
-    payments: 'Payments',
+    payments: 'Service Payment',
     history: 'History',
-    profile: 'Profile',
+    reminders: 'Reminder',
+    debts: 'Debts',
+    messages: 'Messages',
+    account: 'Account',
     settings: 'Settings',
+    help: 'Help Center',
     logout: 'Logout',
     login: 'Login',
-    register: 'Register'
+    register: 'Register',
+    online: 'Online',
+    clientOfAgruni: 'Client of Agruni',
+    customerOfAgruni: 'Customer of Agruni',
   },
 
   // Dashboard
   dashboard: {
     title: 'Dashboard',
     welcome: 'Welcome back',
-    welcomeGreeting: 'Muraho, {name}',
+    welcomeGreeting: 'Hello, {name}',
     overviewToday: "Here's your overview for today — {date}",
     quickPaymentHub: 'Quick Payment Hub',
     serviceStatus: 'Service Status',
@@ -51,42 +63,19 @@ export default {
     quickActions: 'Quick Actions',
     trackCollection: 'Track Collection',
     viewAll: 'View All',
-    totalCustomers: 'Total Customers',
-    paidThisWeek: 'Paid This Week',
-    unpaidThisWeek: 'Unpaid This Week',
-    bannedHouses: 'Banned Houses',
     paid: 'Paid',
     unpaid: 'Unpaid',
-    allTime: 'All time',
     thisWeek: 'This Week',
-    thisMonth: 'This month',
-    vsLastWeek: 'vs last week',
-    warningZone: '{count} customers are in the warning zone and approaching ban status.',
-    weeksUnpaid: '{count} weeks unpaid',
-    sendReminder: 'Remind',
-    viewAllCustomers: 'View all {count} customers',
-    registerCustomer: 'Register Customer',
-    addNewHousehold: 'Add new household',
-    viewHouses: 'View Houses',
-    checkPaymentStatus: 'Check payment status',
-    viewReminders: 'View Reminders',
-    pendingWarnings: '{count} pending warnings',
-    sendAnnouncement: 'Send Announcement',
-    notifyCustomers: 'Notify customers',
-    paymentByCategory: 'Payment by Category',
-    weeklyCollections: "This Week's Collections",
-    noCashNotice: 'All payments are processed digitally via MoMo or bank transfer.',
-    noCashStrong: 'Do not accept cash payments.',
+    thisMonth: 'This Month',
     syncedJustNow: 'Synced just now',
-    syncedAgo: 'Synced {minutes} min ago',
     syncing: 'Syncing...',
-    syncFailed: 'Sync failed — tap to retry'
   },
 
   // Payment
   payment: {
-    selectWeeks: 'Select Weeks to Pay',
-    selectedWeeks: '{count} weeks selected',
+    title: 'Service Payment',
+    selectWeeks: 'Select weeks to pay',
+    selectedWeeks: '{count} week(s) selected',
     totalAmount: 'Total Amount',
     weeksSelected: 'Weeks Selected',
     confirmPayment: 'Confirm Payment',
@@ -103,19 +92,126 @@ export default {
       paid: 'Paid',
       pending: 'Pending',
       overdue: 'Overdue',
-      upcoming: 'Upcoming'
-    }
+      upcoming: 'Upcoming',
+    },
   },
 
-  // Debt
+  // Debts
   debt: {
-    title: {
-      default: 'Payment Reminder',
-      warning: 'Payment Overdue',
-      danger: 'Service Suspension Warning'
-    },
+    title: 'My Debts',
+    description: 'Review and settle your outstanding collection payments.',
+    totalDebt: 'Total Outstanding',
+    unpaidMonths: 'Unpaid months — settle to avoid service suspension.',
+    noDebts: 'No outstanding debts.',
+    payNow: 'Pay Now',
+    month: 'Month',
+    amount: 'Amount',
+    status: 'Status',
+    action: 'Action',
     owedFor: 'owed for {count} week(s)',
-    serviceBanWarning: 'Service will be suspended if payment is not made within 7 days'
+    serviceBanWarning: 'Service will be suspended if payment is not made within 7 days',
+  },
+
+  // Account
+  account: {
+    title: 'My Account',
+    description: 'Manage your personal details, location, and service preferences.',
+    downloadPdf: 'Download Profile PDF',
+    personalInfo: 'Personal Information',
+    myLocation: 'My Location',
+    serviceUsage: 'Service Usage',
+    fullName: 'Full Name',
+    accountId: 'Account ID',
+    phone: 'Phone',
+    email: 'Email Address',
+    joined: 'Joined',
+    status: 'Status',
+    district: 'District',
+    sector: 'Sector',
+    houseNumber: 'House Number',
+    cell: 'Cell',
+    paymentRate: 'Payment Rate',
+    totalPaid: 'Total Paid',
+    currentPlan: 'Current Plan',
+    rating: 'Rating',
+    editPersonalInfo: 'Edit Personal Information',
+    editLocation: 'Edit Location',
+    editMetrics: 'Edit Service Metrics',
+    active: 'Active',
+    appUser: 'App User',
+  },
+
+  // Settings
+  settings: {
+    title: 'Settings & Preferences',
+    description: 'Configure your account security, notifications, and service preferences.',
+    personalInfo: 'Personal Information',
+    personalInfoHint: 'To update your name, phone, or location, please visit your account page.',
+    security: 'Security',
+    currentPassword: 'Current Password',
+    newPassword: 'New Password',
+    showPasswords: 'Show passwords',
+    updatePassword: 'Update Password',
+    strength: {
+      weak: 'Password strength: Weak',
+      medium: 'Password strength: Medium',
+      strong: 'Password strength: Strong',
+    },
+    notifications: 'Notifications',
+    smsNotifications: 'SMS Notifications',
+    smsNotificationsHint: 'Receive collection alerts on your phone.',
+    emailReceipts: 'Email Receipts',
+    emailReceiptsHint: 'Get payment confirmations via email.',
+    pushNotifications: 'Push Notifications',
+    pushNotificationsHint: 'In-app alerts for schedule changes.',
+    servicePreferences: 'Service Preferences',
+    language: 'Preferred Platform Language',
+    collectionTiming: 'Collection Timing Preference',
+    morning: 'Morning (6 AM - 11 AM)',
+    afternoon: 'Afternoon (1 PM - 5 PM)',
+    anytime: 'Anytime',
+    savePreferences: 'Save Preferences',
+  },
+
+  // Help Center
+  help: {
+    title: 'Help Center',
+    description: 'Find everything you need to know about Agruni and how to manage your service through this portal.',
+    searchPlaceholder: 'Search for guides, billing, or FAQs...',
+    aboutAgruni: 'About Agruni',
+    aboutText: "Agruni is Rwanda's leading waste management and sanitation service provider. Our mission is to transform urban living by creating a clean, green, and sustainable environment for all citizens.",
+    benefit1: 'Integrated waste collection & recycling',
+    benefit2: 'Environmentally friendly disposal systems',
+    benefit3: 'Digital transformation of municipal services',
+    howItWorks: 'How the Portal Works',
+    howItWorksIntro: 'The Agruni Client Portal is a digital bridge between citizens and our waste management team. Use it to:',
+    step1Title: 'Monitor Dashboard:',
+    step1Text: 'Get immediate updates on your collection status and any outstanding balances.',
+    step2Title: 'Digital Payments:',
+    step2Text: 'Pay for your waste collection services instantly using Mobile Money (MoMo) or Credit/Debit Cards.',
+    step3Title: 'Direct Communication:',
+    step3Text: 'Chat directly with your assigned agent or the support center regarding service issues.',
+    faq: 'Frequently Asked Questions',
+    faq1Q: 'How do I pay for my monthly collection?',
+    faq1A: 'Navigate to the Service Payment tab in the sidebar. You can select your unpaid months and complete the transaction via MTN MoMo or your bank card.',
+    faq2Q: 'What if the truck missed my scheduled pickup?',
+    faq2A: 'Go to the Messages section and send a quick message to your assigned agent. They can provide real-time updates on their location.',
+    faq3Q: 'Can I change my collection frequency?',
+    faq3A: 'Currently, collection frequencies are standardized per zone. If you require special disposal, please contact support via the Help Center.',
+    needMoreHelp: 'Need more help?',
+    supportAvailability: 'Our support team is available Monday - Friday, 8:00 AM - 5:00 PM.',
+    contactSupport: 'Contact Support',
+  },
+
+  // Messages
+  messages: {
+    title: 'Messages',
+    description: 'Communicate directly with your Agruni service agents.',
+    typeMessage: 'Type a message...',
+    send: 'Send',
+    you: 'You',
+    online: 'Online',
+    supportAgent: 'Support Agent',
   },
 
   // User
@@ -127,14 +223,14 @@ export default {
     role: 'Role',
     language: 'Language',
     lastLogin: 'Last Login',
-    memberSince: 'Member Since'
+    memberSince: 'Member Since',
   },
 
   // Roles
   roles: {
     user: 'User',
     admin: 'Administrator',
-    worker: 'Collection Agent'
+    worker: 'Collection Agent',
   },
 
   // Service
@@ -144,20 +240,19 @@ export default {
     distance: '{distance} km away',
     estimatedTime: 'Est. {time}',
     collectionStatus: 'Collection Status',
-    nextCollection: 'Next Collection'
+    nextCollection: 'Next Collection',
   },
 
   // Errors
   errors: {
     networkError: 'Network error. Please check your connection.',
     serverError: 'Server error. Please try again later.',
-    invalidCredentials: 'Invalid email or password.',
     paymentFailed: 'Payment failed. Please try again.',
     insufficientFunds: 'Insufficient funds.',
     invalidPin: 'Invalid PIN. Please try again.',
     sessionExpired: 'Session expired. Please login again.',
     notFound: 'Page not found.',
-    accessDenied: 'Access denied.'
+    accessDenied: 'Access denied.',
   },
 
   // Success messages
@@ -166,7 +261,7 @@ export default {
     profileUpdated: 'Profile updated successfully!',
     passwordChanged: 'Password changed successfully!',
     settingsSaved: 'Settings saved successfully!',
-    logout: 'Logged out successfully.'
+    logout: 'Logged out successfully.',
   },
 
   // Form validation
@@ -178,7 +273,7 @@ export default {
     maxLength: 'Must be no more than {max} characters',
     passwordMatch: 'Passwords must match',
     numeric: 'Please enter a valid number',
-    positive: 'Please enter a positive number'
+    positive: 'Please enter a positive number',
   },
 
   // Date and time
@@ -194,11 +289,11 @@ export default {
     lastYear: 'Last Year',
     ago: '{time} ago',
     in: 'in {time}',
-    minutes: '{count} minute',
-    hours: '{count} hour',
-    days: '{count} day',
-    weeks: '{count} week',
-    months: '{count} month',
-    years: '{count} year'
-  }
+    minutes: '{count} minute(s)',
+    hours: '{count} hour(s)',
+    days: '{count} day(s)',
+    weeks: '{count} week(s)',
+    months: '{count} month(s)',
+    years: '{count} year(s)',
+  },
 }

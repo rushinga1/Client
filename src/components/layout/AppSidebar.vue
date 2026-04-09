@@ -8,7 +8,7 @@
         </div>
         <div v-if="!isCollapsed" class="logo-text">
           <span class="logo-name">AGRUNI</span>
-          <span class="logo-tagline">Worker Portal</span>
+          <span class="logo-tagline">Client Portal</span>
         </div>
       </div>
     </div>
@@ -16,43 +16,43 @@
     <!-- Navigation -->
     <nav class="sidebar__nav">
       <div class="nav-section">
-        <div v-if="!isCollapsed" class="nav-section-title">Overview</div>
+        <div v-if="!isCollapsed" class="nav-section-title">{{ $t('dashboard.title') }}</div>
         <ul class="nav-list">
           <li class="nav-item">
-            <router-link to="/dashboard" class="nav-link" active-class="nav-link--active" data-tooltip="Dashboard">
+            <router-link to="/dashboard" class="nav-link" active-class="nav-link--active" :data-tooltip="$t('nav.dashboard')">
               <Icon icon="ph:squares-four" />
-              <span v-if="!isCollapsed" class="nav-text">Dashboard</span>
+              <span v-if="!isCollapsed" class="nav-text">{{ $t('nav.dashboard') }}</span>
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/houses" class="nav-link" active-class="nav-link--active" data-tooltip="Houses">
-              <Icon icon="ph:house-line" />
-              <span v-if="!isCollapsed" class="nav-text">Houses</span>
+            <router-link to="/pay" class="nav-link" active-class="nav-link--active" :data-tooltip="$t('nav.payments')">
+              <Icon icon="ph:credit-card" />
+              <span v-if="!isCollapsed" class="nav-text">{{ $t('nav.payments') }}</span>
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/register" class="nav-link" active-class="nav-link--active" data-tooltip="Register Customer">
-              <Icon icon="ph:user-plus" />
-              <span v-if="!isCollapsed" class="nav-text">Register Customer</span>
+            <router-link to="/history" class="nav-link" active-class="nav-link--active" :data-tooltip="$t('nav.history')">
+              <Icon icon="ph:clock-counter-clockwise" />
+              <span v-if="!isCollapsed" class="nav-text">{{ $t('nav.history') }}</span>
             </router-link>
           </li>
         </ul>
       </div>
 
       <div class="nav-section">
-        <div v-if="!isCollapsed" class="nav-section-title">Monitoring</div>
+        <div v-if="!isCollapsed" class="nav-section-title">Finance & Status</div>
         <ul class="nav-list">
           <li class="nav-item">
-            <router-link to="/reminders" class="nav-link" active-class="nav-link--active" data-tooltip="Reminders">
-              <Icon icon="ph:warning-circle" />
-              <span v-if="!isCollapsed" class="nav-text">Reminders</span>
-              <span v-if="!isCollapsed && reminderCount > 0" class="nav-badge nav-badge--warning" :aria-label="reminderCount + ' pending reminders'">{{ reminderCount }}</span>
+            <router-link to="/reminders" class="nav-link" active-class="nav-link--active" :data-tooltip="$t('nav.reminders')">
+              <Icon icon="ph:bell-simple" />
+              <span v-if="!isCollapsed" class="nav-text">{{ $t('nav.reminders') }}</span>
+              <span v-if="!isCollapsed && reminderCount > 0" class="nav-badge nav-badge--warning">{{ reminderCount }}</span>
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/banned" class="nav-link" active-class="nav-link--active" data-tooltip="Banned Houses">
-              <Icon icon="ph:prohibit" />
-              <span v-if="!isCollapsed" class="nav-text">Banned Houses</span>
+            <router-link to="/debts" class="nav-link" active-class="nav-link--active" :data-tooltip="$t('nav.debts')">
+              <Icon icon="ph:money" />
+              <span v-if="!isCollapsed" class="nav-text">{{ $t('nav.debts') }}</span>
             </router-link>
           </li>
         </ul>
@@ -62,35 +62,28 @@
         <div v-if="!isCollapsed" class="nav-section-title">Communication</div>
         <ul class="nav-list">
           <li class="nav-item">
-            <router-link to="/messages" class="nav-link" active-class="nav-link--active" data-tooltip="Messages">
+            <router-link to="/messages" class="nav-link" active-class="nav-link--active" :data-tooltip="$t('nav.messages')">
               <Icon icon="ph:chat-circle-dots" />
-              <span v-if="!isCollapsed" class="nav-text">Messages</span>
-              <span v-if="!isCollapsed && messageCount > 0" class="nav-badge nav-badge--info" :aria-label="messageCount + ' unread messages'">{{ messageCount }}</span>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/notifications" class="nav-link" active-class="nav-link--active" data-tooltip="Notifications">
-              <Icon icon="ph:bell-ringing" />
-              <span v-if="!isCollapsed" class="nav-text">Notifications</span>
-              <span v-if="!isCollapsed && notificationCount > 0" class="nav-badge nav-badge--danger" :aria-label="notificationCount + ' unread notifications'">{{ notificationCount }}</span>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/announcements" class="nav-link" active-class="nav-link--active" data-tooltip="Announcements">
-              <Icon icon="ph:megaphone-simple" />
-              <span v-if="!isCollapsed" class="nav-text">Announcements</span>
+              <span v-if="!isCollapsed" class="nav-text">{{ $t('nav.messages') }}</span>
+              <span v-if="!isCollapsed && messageCount > 0" class="nav-badge nav-badge--info">{{ messageCount }}</span>
             </router-link>
           </li>
         </ul>
       </div>
 
       <div class="nav-section">
-        <div v-if="!isCollapsed" class="nav-section-title">Account</div>
+        <div v-if="!isCollapsed" class="nav-section-title">Profile</div>
         <ul class="nav-list">
           <li class="nav-item">
-            <router-link to="/profile" class="nav-link" active-class="nav-link--active" data-tooltip="Profile">
-              <Icon icon="ph:user-circle" />
-              <span v-if="!isCollapsed" class="nav-text">Profile</span>
+            <router-link to="/account" class="nav-link" active-class="nav-link--active" :data-tooltip="$t('nav.account')">
+              <Icon icon="ph:user-focus" />
+              <span v-if="!isCollapsed" class="nav-text">{{ $t('nav.account') }}</span>
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/settings" class="nav-link" active-class="nav-link--active" :data-tooltip="$t('nav.settings')">
+              <Icon icon="ph:gear" />
+              <span v-if="!isCollapsed" class="nav-text">{{ $t('nav.settings') }}</span>
             </router-link>
           </li>
         </ul>
@@ -100,14 +93,15 @@
     <!-- User Section -->
     <div class="sidebar__user">
       <div class="user-profile">
-        <div class="user-avatar">
-          <div class="user-avatar-initials">AM</div>
+        <div class="user-avatar overflow-hidden">
+          <img v-if="authStore.user?.avatar" :src="authStore.user.avatar" alt="User" class="avatar-img" />
+          <div v-else class="user-avatar-initials">{{ userInitials }}</div>
         </div>
         <div v-if="!isCollapsed" class="user-info">
-          <div class="user-name">Agent Marie</div>
-          <div class="user-role">Field Worker • Kigali</div>
+          <div class="user-name">{{ authStore.user?.name || 'User' }}</div>
+          <div class="user-role">{{ $t('nav.customerOfAgruni') }}</div>
         </div>
-        <button v-if="!isCollapsed" class="user-logout" @click="handleLogout" title="Logout">
+        <button v-if="!isCollapsed" class="user-logout" @click="handleLogout" :title="$t('nav.logout')">
           <Icon icon="ph:sign-out" />
         </button>
       </div>
@@ -121,22 +115,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
+import { useAuthStore } from '../../stores/auth.store'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const isCollapsed = ref(false)
 const messageCount = ref(4)
 const notificationCount = ref(7)
 const reminderCount = ref(12)
 
+const userInitials = computed(() => {
+  const name = authStore.user?.name || ''
+  return name.split(' ').map(n => n[0]).join('').toUpperCase()
+})
+
 const toggleCollapse = () => {
   isCollapsed.value = !isCollapsed.value
 }
 
 const handleLogout = async () => {
+  await authStore.logout()
   router.push('/login')
 }
 </script>
@@ -353,6 +355,16 @@ const handleLogout = async () => {
   border-radius: 10px;
   overflow: hidden;
   flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }
 
 .user-avatar-initials {
